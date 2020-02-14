@@ -6,7 +6,7 @@ from ...registry import SEGMENTAL_CONSENSUSES
 class _SimpleConsensus(torch.autograd.Function):
     """Simplest segmental consensus module"""
 
-    def __init__(self,
+    '''def __init__(self,
                  consensus_type='avg',
                  dim=1):
         super(_SimpleConsensus, self).__init__()
@@ -14,22 +14,26 @@ class _SimpleConsensus(torch.autograd.Function):
         assert consensus_type in ['avg']
         self.consensus_type = consensus_type
         self.dim = dim
-        self.shape = None
+        self.shape = None'''
 
-    def forward(self, x):
-        self.shape = x.size()
-        if self.consensus_type == 'avg':
-            output = x.mean(dim=self.dim, keepdim=True)
+    @staticmethod
+    def forward(ctx, x, consensus_type='avg', dim=1):
+        ctx.shape = x.size()
+        ctx.consensus_type = consensus_type
+        ctx.dim = dim
+        if ctx.consensus_type == 'avg':
+            output = x.mean(dim=ctx.dim, keepdim=True)
         else:
             output = None
         return output
 
-    def backward(self, grad_output):
-        if self.consensus_type == 'avg':
-            grad_in = grad_output.expand(self.shape) / float(self.shape[self.dim])
+    @staticmethod
+    def backward(ctx, grad_output):
+        if ctx.consensus_type == 'avg':
+            grad_in = grad_output.expand(ctx.shape) / float(ctx.shape[ctx.dim])
         else:
             grad_in = None
-        return grad_in
+        return grad_in, None, None
 
 
 @SEGMENTAL_CONSENSUSES.register_module
@@ -45,4 +49,4 @@ class SimpleConsensus(nn.Module):
         pass
 
     def forward(self, input):
-        return _SimpleConsensus(self.consensus_type, self.dim)(input)
+        return _SimpleConsensus.apply(input, self.consensus_type, self.dim)
