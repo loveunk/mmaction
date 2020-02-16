@@ -1,4 +1,5 @@
 import mmcv
+import glob
 import numpy as np
 import os.path as osp
 from mmcv.parallel import DataContainer as DC
@@ -65,6 +66,7 @@ class VideoDataset(Dataset):
                  video_ext='mp4'):
         # prefix of images path
         self.img_prefix = img_prefix
+        print("Image prefix is '{}'".format(self.img_prefix))
 
         # load annotations
         self.video_infos = self.load_annotations(ann_file)
@@ -260,6 +262,13 @@ class VideoDataset(Dataset):
                 raise NotImplementedError
             images = list()
             for seg_ind in indices:
+                # prevent reading from an empty video, this part should never run
+                if record.num_frames==0:
+                    images.append(np.ones((256, 340, 3), dtype=int))
+                    print("appending {} frame to training data in decord".format(seg_ind))
+                    continue
+                # end of insert
+                              
                 p = int(seg_ind)
                 if p > 1:
                     video_reader.seek(p - 1)
@@ -283,6 +292,13 @@ class VideoDataset(Dataset):
         else:
             images = list()
             for seg_ind in indices:
+                # prevent reading from an empty video
+                if record.num_frames==0:
+                    images.append(np.ones((256, 340, 3), dtype=int))
+                    print("appending {} frame to training data".format(seg_ind))
+                    continue
+                # end of insert
+                
                 p = int(seg_ind)
                 for i, ind in enumerate(
                         range(0, self.old_length, self.new_step)):
@@ -303,14 +319,38 @@ class VideoDataset(Dataset):
     def __getitem__(self, idx):
         record = self.video_infos[idx]
         if self.use_decord:
-            video_reader = decord.VideoReader('{}.{}'.format(
+            ctx = decord.cpu(0)
+            video_reader = mmcv.VideoReader('{}.{}'.format(
                 osp.join(self.img_prefix, record.path), self.video_ext))
             record.num_frames = len(video_reader)
+            print('\n{}.{}'.format(osp.join(self.img_prefix, record.path), self.video_ext), "num of frame is {}".format(record.num_frames))
+            if record.num_frames < 85:
+                print("Error:  use_decord", self.use_decord , "read {} frame".format(record.num_frames)," from '{}'".format(record.path))
+                ## insert a fake video in the same class because there is an empty stream
+                broken_file_name = osp.join(self.img_prefix, record.path).split('/')[-1]
+                replace_idx = 0
+                while True:
+                    fake_video = glob.glob(osp.join(self.img_prefix, record.path)[:-len(broken_file_name)] + "*.mp4")[replace_idx]
+                    if len(mmcv.VideoReader(fake_video)) > 85:
+                        break
+                    else:
+                        replace_idx += 1
+
+                print('Use a fake video "{}" to replace "{}"'.format(fake_video, osp.join(self.img_prefix, record.path)))
+                #fake_video = '/data/wedward/kinetics/kinetics400/train_256/air_drumming/C8LG6sa7JkM_000039_000049.mp4'
+                video_reader = decord.VideoReader(fake_video, ctx=ctx)
+                record.num_frames = len(video_reader)
+                
+            else:
+                #print('{}.{}'.format(osp.join(self.img_prefix, record.path), self.video_ext))
+                video_reader = decord.VideoReader('{}.{}'.format(
+                    osp.join(self.img_prefix, record.path), self.video_ext), ctx=ctx)
+
         else:
             video_reader = mmcv.VideoReader('{}.{}'.format(
                 osp.join(self.img_prefix, record.path), self.video_ext))
             record.num_frames = len(video_reader)
-
+            print("use_decord", self.use_decord ,record.num_frames," ", record.path)
         if self.test_mode:
             segment_indices, skip_offsets = self._get_test_indices(record)
         else:
@@ -324,6 +364,8 @@ class VideoDataset(Dataset):
         # handle the first modality
         modality = self.modalities[0]
         image_tmpl = self.image_tmpls[0]
+        
+        ### start to revise this process in _get_frames
         img_group = self._get_frames(record, video_reader, image_tmpl,
                                      modality, segment_indices, skip_offsets)
 
