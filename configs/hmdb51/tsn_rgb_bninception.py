@@ -120,6 +120,6 @@ log_config = dict(
 total_epochs = 80
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/tsn_2d_rgb_bninception_seg_3_f1s1_b32_g8'
+work_dir = './work_dirs/hmdb51/tsn_2d_rgb_bninception_seg_3_f1s1_b32_g8'
 load_from = None
 resume_from = None

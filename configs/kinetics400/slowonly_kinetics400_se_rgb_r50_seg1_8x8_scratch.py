@@ -135,6 +135,6 @@ log_config = dict(
 total_epochs = 196
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/slowonly_kinetics400_se_rgb_r50_seg1_8x8_scratch_b8_g8'
+work_dir = './work_dirs/kinetics400/slowonly_kinetics400_se_rgb_r50_seg1_8x8_scratch_b8_g8'
 load_from = None
 resume_from = None

@@ -156,7 +156,7 @@ log_config = dict(
 total_epochs = 450 
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/ssn_thumos14_2d_rgb_bn_inception'
+work_dir = './work_dirs/thumos14/ssn_thumos14_2d_rgb_bn_inception'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]

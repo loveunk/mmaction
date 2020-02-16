@@ -186,7 +186,7 @@ log_config = dict(
 total_epochs = 12
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/ava_fast_rcnn_nl_r50_c4_1x_f32s2_kinetics_pretrain_crop_multiscale'
+work_dir = './work_dirs/ava/ava_fast_rcnn_nl_r50_c4_1x_f32s2_kinetics_pretrain_crop_multiscale'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
