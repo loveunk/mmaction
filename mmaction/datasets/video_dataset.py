@@ -323,7 +323,7 @@ class VideoDataset(Dataset):
             video_reader = mmcv.VideoReader('{}.{}'.format(
                 osp.join(self.img_prefix, record.path), self.video_ext))
             record.num_frames = len(video_reader)
-            print('\n{}.{}'.format(osp.join(self.img_prefix, record.path), self.video_ext), "num of frame is {}".format(record.num_frames))
+            # print('\n{}.{}'.format(osp.join(self.img_prefix, record.path), self.video_ext), "num of frame is {}".format(record.num_frames))
             if record.num_frames < 85:
                 print("Error:  use_decord", self.use_decord , "read {} frame".format(record.num_frames)," from '{}'".format(record.path))
                 ## insert a fake video in the same class because there is an empty stream
