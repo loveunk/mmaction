@@ -336,7 +336,7 @@ class VideoDataset(Dataset):
                     else:
                         replace_idx += 1
 
-                print('Use a fake video "{}" to replace "{}"'.format(fake_video, osp.join(self.img_prefix, record.path)))
+                # print('Use a fake video "{}" to replace "{}"'.format(fake_video, osp.join(self.img_prefix, record.path)))
                 #fake_video = '/data/wedward/kinetics/kinetics400/train_256/air_drumming/C8LG6sa7JkM_000039_000049.mp4'
                 video_reader = decord.VideoReader(fake_video, ctx=ctx)
                 record.num_frames = len(video_reader)
