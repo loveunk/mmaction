@@ -16,7 +16,7 @@ The supported datasets are listed below.
 We provide shell scripts for data preparation under the path `$MMACTION/data_tools/`.
 To ease usage, we provide tutorials of data deployment for each dataset.
 
-- [HMDB51](http://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/): See [PREPARING_HMDB101.md](https://github.com/open-mmlab/mmaction/tree/master/data_tools/hmdb51/PREPARING_HMDB101.md)
+- [HMDB51](http://serre-lab.clps.brown.edu/resource/hmdb-a-large-human-motion-database/): See [PREPARING_HMDB51.md](https://github.com/open-mmlab/mmaction/tree/master/data_tools/hmdb51/PREPARING_HMDB51.md)
 - [UCF101](https://www.crcv.ucf.edu/data/UCF101.php): See [PREPARING_UCF101.md](https://github.com/open-mmlab/mmaction/tree/master/data_tools/ucf101/PREPARING_UCF101.md)
 - [Kinetics400](https://deepmind.com/research/open-source/open-source-datasets/kinetics/): See [PREPARING_KINETICS400.md](https://github.com/open-mmlab/mmaction/tree/master/data_tools/kinetics400/PREPARING_KINETICS400.md)
 - [THUMOS14](https://www.crcv.ucf.edu/THUMOS14/download.html): See [PREPARING_TH14.md](https://github.com/open-mmlab/mmaction/tree/master/data_tools/thumos14/PREPARING_TH14.md)
