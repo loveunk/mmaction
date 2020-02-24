@@ -7,4 +7,4 @@ cd ../
 python build_rawframes.py ../data/hmdb51/videos/ ../data/hmdb51/rawframes/ --level 2  --ext avi --num_gpu ${num_gpu} --num_worker ${num_worker}
 echo "Raw frames (RGB only) generated for train and val set"
 
-cd ava/
+cd hmdb51/
